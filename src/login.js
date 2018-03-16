@@ -1,10 +1,11 @@
 const { errors, log, requestFactory } = require('cozy-konnector-libs')
 const { encode, deduce } = require('./digipad')
 
+const jar = module.exports.jar = require('request-promise').jar()
 const request = requestFactory({
   cheerio: true,
   json: false,
-  jar: true
+  jar
 })
 
 const baseUrl = 'https://www.generali.fr'

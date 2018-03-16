@@ -1,10 +1,11 @@
+const { jar } = require('./login')
 const { requestFactory, saveBills } = require('cozy-konnector-libs')
 const { formatDate, formatName, getText, parseAmount, parseDate } = require('./utils')
 
 const request = requestFactory({
   cheerio: true,
   json: false,
-  jar: true
+  jar
 })
 
 const baseUrl = 'https://espaceclient.generali.fr'
@@ -52,11 +53,12 @@ function parseEntriesFor ({detailsUrl, beneficiary, date, fileUrl}) {
     isThirdPartyPayer: true
   }
   if (fileUrl !== undefined) {
-    common.fileurl = `${baseUrl}${fileUrl}`
+    common.fileurl = `${baseUrl}${fileUrl}`.replace(/ /g, '%20')
     common.filename = `${formatDate(date)}_generali.pdf`
     common.isThirdPartyPayer = false
     // Based on the asumption that Generali provides a report only if the person
     // has paid the professional himself.
+    common.requestOptions = { jar }
   }
 
   return request(`${baseUrl}${detailsUrl}`)
